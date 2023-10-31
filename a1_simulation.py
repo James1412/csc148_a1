@@ -45,12 +45,12 @@ class Simulation:
     - self.num_floors >= 2
     - list(self.waiting.keys()) == list(range(1, self.num_floors + 1))
     """
-    arrival_generator: a1_algorithms.ArrivalGenerator
-    elevators: list[Elevator]
-    moving_algorithm: a1_algorithms.MovingAlgorithm
-    num_floors: int
-    visualizer: Visualizer
-    waiting: dict[int, list[Person]]
+    arrival_generator: a1_algorithms.ArrivalGenerator  # done
+    elevators: list[Elevator]  # done
+    moving_algorithm: a1_algorithms.MovingAlgorithm  # done
+    num_floors: int  # done
+    visualizer: Visualizer  # done
+    waiting: dict[int, list[Person]]  # done
 
     def __init__(self,
                  config: dict[str, Any]) -> None:
