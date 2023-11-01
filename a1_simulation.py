@@ -85,7 +85,7 @@ class Simulation:
         for floor in range(1, self.num_floors + 1):
             self.waiting[floor] = []
 
-    # Initialize the visualizer (this is done for you).
+        # Initialize the visualizer (this is done for you).
         # Note that this should be executed *after* the other attributes
         # have been initialized, particularly
         # self.elevators and self.num_floors.
@@ -155,7 +155,7 @@ class Simulation:
                 self.waiting[key].extend(value)
             else:
                 self.waiting[key] = value
-        return self.visualizer.show_arrivals(new_arrival)
+        self.visualizer.show_arrivals(new_arrival)
 
     def handle_boarding(self) -> None:
         """Handle boarding of people and visualize."""
