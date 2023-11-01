@@ -160,7 +160,6 @@ class Simulation:
     def handle_boarding(self) -> None:
         """Handle boarding of people and visualize."""
 
-
     def move_elevators(self) -> None:
         """Update elevator target floors and then move them."""
 
