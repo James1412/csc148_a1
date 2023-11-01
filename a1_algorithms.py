@@ -109,6 +109,17 @@ class SingleArrivals(ArrivalGenerator):
         >>> print(my_arrivals[1])
         [Person(start=1, target=2, wait_time=0)]
         """
+        new_person = Person(1, 2)
+        new_arrivals = {1: [new_person]}
+        if round_num == 0:
+            return new_arrivals
+        else:
+            for i in range(round_num):
+                if new_person.target != self.max_floor:
+                    new_person.target += 1
+                else:
+                    new_person.target = 2
+            return new_arrivals
 
 
 @check_contracts
