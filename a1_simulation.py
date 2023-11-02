@@ -222,7 +222,6 @@ class Simulation:
         """
         num_rounds = self.num_rounds  # done
         total_people = self.total_people  # done
-        total_wait_time = 0
         people_completed = len(self.people_left)  # done
 
         # Max time
@@ -233,12 +232,17 @@ class Simulation:
         times.sort()
         max_time = times[-1]
 
+        total_time = 0
+        for item in times:
+            total_time += item
+        avg_time = total_time / len(times)
+
         return {
             'num_rounds': num_rounds,
             'total_people': total_people,
             'people_completed': people_completed,
             'max_time': max_time,
-            'avg_time': 0
+            'avg_time': avg_time
         }
 
 
