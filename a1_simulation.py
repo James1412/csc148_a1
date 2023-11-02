@@ -15,6 +15,7 @@ Note that we have provided a fairly comprehensive list of attributes for
 Simulation already. You may add your own *private* attributes, but should not
 modify/remove any of the existing attributes.
 """
+import math
 # You MAY import more things from these modules (e.g., additional types from
 # typing), but you may not import from any other modules.
 from typing import Any
@@ -235,7 +236,7 @@ class Simulation:
         total_time = 0
         for item in times:
             total_time += item
-        avg_time = total_time / len(times)
+        avg_time = math.floor(total_time / len(times))
 
         return {
             'num_rounds': num_rounds,
