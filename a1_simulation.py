@@ -150,12 +150,13 @@ class Simulation:
     def generate_arrivals(self, round_num: int) -> None:
         """Generate and visualize new arrivals."""
         new_arrival = self.arrival_generator.generate(round_num)
-        for key, value in new_arrival:
-            if key in self.waiting:
-                self.waiting[key].extend(value)
-            else:
-                self.waiting[key] = value
         self.visualizer.show_arrivals(new_arrival)
+        for floor in new_arrival:
+            for person in new_arrival[floor]:
+                if person not in self.waiting[floor]:
+                    self.waiting[floor].append(person)
+
+        # TODO Changed it a bunch but now the simulation opens but idk if it works correctly
 
     def handle_boarding(self) -> None:
         """Handle boarding of people and visualize."""
