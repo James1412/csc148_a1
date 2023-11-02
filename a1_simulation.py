@@ -39,11 +39,13 @@ class Simulation:
         - The keys are floor numbers from 1 to num_floors, inclusive
         - Each corresponding value is the list of people waiting at that floor
           (could be an empty list)
+    - people_left: number of completed people (disembarked from the elevator)
 
     Representation Invariants:
     - len(self.elevators) >= 1
     - self.num_floors >= 2
     - list(self.waiting.keys()) == list(range(1, self.num_floors + 1))
+    - len(self.people_left) >= 0
     """
     arrival_generator: a1_algorithms.ArrivalGenerator  # done
     elevators: list[Elevator]  # done
@@ -51,6 +53,7 @@ class Simulation:
     num_floors: int  # done
     visualizer: Visualizer  # done
     waiting: dict[int, list[Person]]  # done
+    people_left = list[Person]
 
     def __init__(self,
                  config: dict[str, Any]) -> None:
@@ -78,6 +81,7 @@ class Simulation:
             self.elevators.append(new_elevator)
 
         self.num_floors = config['num_floors']
+        self.people_left = []
 
         # Initialize self.waiting with empty list
         # of people for each floor (James)
@@ -152,6 +156,7 @@ class Simulation:
             for person in elevator.passengers:
                 if person.target == elevator.current_floor \
                         and elevator.target_floor == elevator.current_floor:
+                    self.people_left.append(person)
                     self.visualizer.show_disembarking(person, elevator)
                 else:
                     remaining_passengers.append(person)
@@ -173,7 +178,8 @@ class Simulation:
             waiting_person = self.waiting[floor]
             for elevator in self.elevators:
                 for person in waiting_person:
-                    if elevator.current_floor == person.start and elevator.fullness() < 1.0 \
+                    if elevator.current_floor == person.start \
+                            and elevator.fullness() < 1.0 \
                             and elevator.target_floor <= person.target:
                         elevator.add_passenger(person)
                         waiting_person.remove(person)
@@ -209,11 +215,17 @@ class Simulation:
          parameters).
         We won't call it directly in our testing.
         """
+        num_rounds = 0
+        total_people = 0
+        max_time = 0
+        total_wait_time = 0
+        people_completed = len(self.people_left)
+
         return {
-            'num_rounds': 0,
-            'total_people': 0,
-            'people_completed': 0,
-            'max_time': 0,
+            'num_rounds': num_rounds,
+            'total_people': total_people,
+            'people_completed': people_completed,
+            'max_time': max_time,
             'avg_time': 0
         }
 
