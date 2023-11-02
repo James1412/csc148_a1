@@ -215,13 +215,16 @@ class MovingAlgorithm:
 
 @check_contracts
 class EndToEndLoop(MovingAlgorithm):
-    """A moving algorithm that causes every elevator to move between the bottom and top floors.
+    """A moving algorithm that causes every elevator to move between the bottom
+    and top floors.
 
     Algorithm description:
 
     - For each elevator:
-        - If the elevator's current floor is 1, the target_floor is set to the max_floor.
-        - If the elevator's current floor is max_floor, the target_floor is set to 1.
+        - If the elevator's current floor is 1, the target_floor is set to the
+        max_floor.
+        - If the elevator's current floor is max_floor, the target_floor is set
+        to 1.
         - In all other cases, the elevator's target_floor is unchanged.
     - This algorithm behaves the same way for all elevators.
     - This algorithm IGNORES the passengers on the elevators, and the people
