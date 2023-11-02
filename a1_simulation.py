@@ -167,6 +167,7 @@ class Simulation:
                         for person in waiting_on_floor:
                             if elevator.fullness() < 1.0:
                                 elevator.passengers.append(person)
+                                waiting_on_floor.remove(person)
                                 self.visualizer.show_boarding(person, elevator)
 
     def move_elevators(self) -> None:
