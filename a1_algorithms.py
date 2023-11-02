@@ -227,6 +227,18 @@ class EndToEndLoop(MovingAlgorithm):
     - This algorithm IGNORES the passengers on the elevators, and the people
       who are waiting for an elevator.
     """
+    def update_target_floors(self,
+                             elevators: list[Elevator],
+                             waiting: dict[int, list[Person]],
+                             max_floor: int) -> None:
+        """EndToEndLoop algorithm implementation"""
+        for elevator in elevators:
+            if elevator.current_floor == 1:
+                elevator.target_floor = max_floor
+            elif elevator.current_floor == max_floor:
+                elevator.target_floor = 1
+            else:
+                return None
 
 
 @check_contracts
