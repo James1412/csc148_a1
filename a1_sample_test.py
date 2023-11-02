@@ -164,7 +164,8 @@ def get_example_config() -> dict:
         'elevator_capacity': 2,
         'arrival_generator': SingleArrivals(6),
         'moving_algorithm': EndToEndLoop(),
-        'visualize': False,  # Note: this is set to False to prevent Pygame from opening a window
+        'visualize': False,
+        # Note: this is set to False to prevent Pygame from opening a window
     }
 
 

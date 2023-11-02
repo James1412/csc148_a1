@@ -15,6 +15,7 @@ Note that we have provided a fairly comprehensive list of attributes for
 Simulation already. You may add your own *private* attributes, but should not
 modify/remove any of the existing attributes.
 """
+import math
 # You MAY import more things from these modules (e.g., additional types from
 # typing), but you may not import from any other modules.
 from typing import Any
@@ -39,11 +40,13 @@ class Simulation:
         - The keys are floor numbers from 1 to num_floors, inclusive
         - Each corresponding value is the list of people waiting at that floor
           (could be an empty list)
+    - people_left: number of completed people (disembarked from the elevator)
 
     Representation Invariants:
     - len(self.elevators) >= 1
     - self.num_floors >= 2
     - list(self.waiting.keys()) == list(range(1, self.num_floors + 1))
+    - len(self.people_left) >= 0
     """
     arrival_generator: a1_algorithms.ArrivalGenerator  # done
     elevators: list[Elevator]  # done
@@ -51,6 +54,9 @@ class Simulation:
     num_floors: int  # done
     visualizer: Visualizer  # done
     waiting: dict[int, list[Person]]  # done
+    people_left: list[Person]
+    num_rounds: int
+    total_people: int
 
     def __init__(self,
                  config: dict[str, Any]) -> None:
@@ -65,7 +71,8 @@ class Simulation:
         A partial implementation has been provided to you; you'll
          need to finish it!
         """
-
+        self.num_rounds = 0
+        self.total_people = 0
         # Initialize the algorithm attributes (this is done for you)
         self.arrival_generator = config['arrival_generator']
         self.moving_algorithm = config['moving_algorithm']
@@ -78,6 +85,7 @@ class Simulation:
             self.elevators.append(new_elevator)
 
         self.num_floors = config['num_floors']
+        self.people_left = []
 
         # Initialize self.waiting with empty list
         # of people for each floor (James)
@@ -107,6 +115,7 @@ class Simulation:
             (since we have not asked you to "reset" back to the initial simulation state
             for this assignment)
         """
+        self.num_rounds = num_rounds
         for i in range(num_rounds):
             self.visualizer.render_header(i)
 
@@ -146,6 +155,18 @@ class Simulation:
            of the elevator
           gets visualized properly.
         """
+        for elevator in self.elevators:
+            # Create a new list of passengers that will remain in the elevator
+            remaining_passengers = []
+            for person in elevator.passengers:
+                if person.target == elevator.current_floor \
+                        and elevator.target_floor == elevator.current_floor:
+                    self.people_left.append(person)
+                    self.visualizer.show_disembarking(person, elevator)
+                else:
+                    remaining_passengers.append(person)
+            elevator.passengers = remaining_passengers
+            elevator.update()
 
     def generate_arrivals(self, round_num: int) -> None:
         """Generate and visualize new arrivals."""
@@ -155,8 +176,7 @@ class Simulation:
             for person in new_arrival[floor]:
                 if person not in self.waiting[floor]:
                     self.waiting[floor].append(person)
-
-        # TODO Changed it a bunch but now the simulation opens but idk if it works correctly
+                    self.total_people += 1
 
     def handle_boarding(self) -> None:
         """Handle boarding of people and visualize."""
@@ -164,7 +184,8 @@ class Simulation:
             waiting_person = self.waiting[floor]
             for elevator in self.elevators:
                 for person in waiting_person:
-                    if elevator.current_floor == person.start and elevator.fullness() < 1.0 \
+                    if elevator.current_floor == person.start \
+                            and elevator.fullness() < 1.0 \
                             and elevator.target_floor <= person.target:
                         elevator.add_passenger(person)
                         waiting_person.remove(person)
@@ -210,12 +231,36 @@ class Simulation:
          parameters).
         We won't call it directly in our testing.
         """
+        num_rounds = self.num_rounds  # done
+        total_people = self.total_people  # done
+        people_completed = len(self.people_left)  # done
+
+        # Max time
+        times = []
+        for floor, people in self.waiting:
+            for person in people:
+                times.append(person.wait_time)
+        times.sort()
+        if not times:
+            max_time = -1
+        else:
+            max_time = times[-1]
+
+        # Average time
+        total_time = 0
+        for item in times:
+            total_time += item
+        if not times:
+            avg_time = -1
+        else:
+            avg_time = math.floor(total_time / len(times))
+
         return {
-            'num_rounds': 0,
-            'total_people': 0,
-            'people_completed': 0,
-            'max_time': 0,
-            'avg_time': 0
+            'num_rounds': num_rounds,
+            'total_people': total_people,
+            'people_completed': people_completed,
+            'max_time': max_time,
+            'avg_time': avg_time
         }
 
 
