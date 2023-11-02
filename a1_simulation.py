@@ -180,6 +180,12 @@ class Simulation:
         who are passengers on an elevator. It does not include people who have
         reached their target floor.
         """
+        for floor in self.waiting:
+            for person in self.waiting[floor]:
+                person.wait_time += 1
+        for elevator in self.elevators:
+            for person in elevator.passengers:
+                person.wait_time += 1
 
     ############################################################################
     # Statistics calculations
