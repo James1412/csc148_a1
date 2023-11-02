@@ -88,6 +88,7 @@ class SingleArrivals(ArrivalGenerator):
         - Round 6: target floor 2
         - etc.
     """
+
     def generate(self, round_num: int) -> dict[int, list[Person]]:
         """Return the new arrivals for the simulation at the given round.
 
@@ -196,6 +197,7 @@ class MovingAlgorithm:
     This is an abstract class, and should not be instantiated directly.
     We have started two subclasses of this class down below.
     """
+
     def update_target_floors(self,
                              elevators: list[Elevator],
                              waiting: dict[int, list[Person]],
@@ -230,6 +232,7 @@ class EndToEndLoop(MovingAlgorithm):
     - This algorithm IGNORES the passengers on the elevators, and the people
       who are waiting for an elevator.
     """
+
     def update_target_floors(self,
                              elevators: list[Elevator],
                              waiting: dict[int, list[Person]],
@@ -264,24 +267,42 @@ class FurthestFloor(MovingAlgorithm):
 
     Note: In Cases 1 and 2, if there is a tie, always pick the *lowest* floor.
     """
+    def update_target_floors(self,
+                             elevators: list[Elevator],
+                             waiting: dict[int, list[Person]],
+                             max_floor: int) -> None:
+        """Updates elevator target floors.
+
+        The parameters are:
+        - elevators: a list of the system's elevators
+        - waiting: a dictionary mapping floor number to the list
+         of people waiting on that floor
+        - max_floor: the maximum floor number in the simulation
+
+        Preconditions:
+        - elevators, waiting, and max_floor are from the same simulation run
+        """
+
 
 if __name__ == '__main__':
     import doctest
+
     doctest.testmod()
 
-    # Uncomment the python_ta lines below and run this module.
-    # This is different that just running doctests! To run this file in PyCharm,
-    # right-click in the file and select "Run a1_algorithms" or "Run File in Python Console".
+    # Uncomment the python_ta lines below and run this module. This is
+    # different that just running doctests! To run this file in PyCharm,
+    # right-click in the file and select "Run a1_algorithms" or "Run File in
+    # Python Console".
     #
     # python_ta will check your work and open up your web browser to display
     # its report. For full marks, you must fix all issues reported, so that
-    # you see "None!" under both "Code Errors" and "Style and Convention Errors".
-    # TIP: To quickly uncomment lines in PyCharm, select the lines below and press
-    # "Ctrl + /" or "⌘ + /".
-    # import python_ta
-    # python_ta.check_all(config={
-    #     'allowed-io': ['FileArrivals.__init__'],
-    #     'extra-imports': ['a1_entities', 'csv'],
-    #     'max-nested-blocks': 4,
-    #     'max-line-length': 100
-    # })
+    # you see "None!" under both "Code Errors" and "Style and Convention
+    # Errors". TIP: To quickly uncomment lines in PyCharm, select the lines
+    # below and press "Ctrl + /" or "⌘ + /".
+    import python_ta
+    python_ta.check_all(config={
+        'allowed-io': ['FileArrivals.__init__'],
+        'extra-imports': ['a1_entities', 'csv'],
+        'max-nested-blocks': 4,
+        'max-line-length': 100
+    })

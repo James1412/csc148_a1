@@ -193,6 +193,17 @@ class Simulation:
 
     def move_elevators(self) -> None:
         """Update elevator target floors and then move them."""
+        self.moving_algorithm.update_target_floors(self.elevators, self.waiting,
+                                                   self.num_floors)
+        directions = []
+        for elevator in self.elevators:
+            if elevator.current_floor < elevator.target_floor:
+                elevator.current_floor += 1
+                directions.append(Direction.UP)
+            elif elevator.current_floor > elevator.target_floor:
+                elevator.current_floor -= 1
+                directions.append(Direction.DOWN)
+        self.visualizer.show_elevator_moves(self.elevators, directions)
 
     def update_wait_times(self) -> None:
         """Update the waiting time for every person waiting in this simulation.
