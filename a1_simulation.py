@@ -167,8 +167,7 @@ class Simulation:
                         for person in waiting_on_floor:
                             if elevator.fullness() < 1.0:
                                 elevator.passengers.append(person)
-                                waiting_on_floor.remove(person)
-                                # TODO IMPLEMENT SHOW_VISUALIZER
+                                self.visualizer.show_boarding(person, elevator)
 
     def move_elevators(self) -> None:
         """Update elevator target floors and then move them."""
@@ -180,7 +179,6 @@ class Simulation:
         who are passengers on an elevator. It does not include people who have
         reached their target floor.
         """
-
 
     ############################################################################
     # Statistics calculations
