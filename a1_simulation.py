@@ -221,10 +221,17 @@ class Simulation:
         We won't call it directly in our testing.
         """
         num_rounds = self.num_rounds  # done
-        total_people = self.total_people
-        max_time = 0
+        total_people = self.total_people  # done
         total_wait_time = 0
         people_completed = len(self.people_left)  # done
+
+        # Max time
+        times = []
+        for floor, people in self.waiting:
+            for person in people:
+                times.append(person.wait_time)
+        times.sort()
+        max_time = times[-1]
 
         return {
             'num_rounds': num_rounds,
