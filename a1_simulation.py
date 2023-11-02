@@ -161,15 +161,14 @@ class Simulation:
     def handle_boarding(self) -> None:
         """Handle boarding of people and visualize."""
         for floor in range(1, self.num_floors + 1):
-            if not self.waiting[floor]:
-                waiting_on_floor = self.waiting[floor]
-                for elevator in self.elevators:
-                    if elevator.current_floor == floor:
-                        for person in waiting_on_floor:
-                            if elevator.fullness() < 1.0:
-                                elevator.passengers.append(person)
-                                waiting_on_floor.remove(person)
-                                self.visualizer.show_boarding(person, elevator)
+            waiting_person = self.waiting[floor]
+            for elevator in self.elevators:
+                for person in waiting_person:
+                    if elevator.current_floor == person.start and elevator.fullness() < 1.0 \
+                            and elevator.target_floor <= person.target:
+                        elevator.add_passenger(person)
+                        waiting_person.remove(person)
+                        self.visualizer.show_boarding(person, elevator)
 
     def move_elevators(self) -> None:
         """Update elevator target floors and then move them."""
