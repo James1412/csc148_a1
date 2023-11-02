@@ -146,6 +146,16 @@ class Simulation:
            of the elevator
           gets visualized properly.
         """
+        for elevator in self.elevators:
+            # Create a new list of passengers that will remain in the elevator
+            remaining_passengers = []
+            for person in elevator.passengers:
+                if person.target == elevator.current_floor:
+                    self.visualizer.show_disembarking(person, elevator)
+                else:
+                    remaining_passengers.append(person)
+            elevator.passengers = remaining_passengers
+            elevator.update()
 
     def generate_arrivals(self, round_num: int) -> None:
         """Generate and visualize new arrivals."""
