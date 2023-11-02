@@ -53,8 +53,9 @@ class Simulation:
     num_floors: int  # done
     visualizer: Visualizer  # done
     waiting: dict[int, list[Person]]  # done
-    people_left = list[Person]
-    num_rounds = int
+    people_left: list[Person]
+    num_rounds: int
+    total_people: int
 
     def __init__(self,
                  config: dict[str, Any]) -> None:
@@ -70,6 +71,7 @@ class Simulation:
          need to finish it!
         """
         self.num_rounds = 0
+        self.total_people = 0
         # Initialize the algorithm attributes (this is done for you)
         self.arrival_generator = config['arrival_generator']
         self.moving_algorithm = config['moving_algorithm']
@@ -173,6 +175,7 @@ class Simulation:
             for person in new_arrival[floor]:
                 if person not in self.waiting[floor]:
                     self.waiting[floor].append(person)
+                    self.total_people += 1
 
     def handle_boarding(self) -> None:
         """Handle boarding of people and visualize."""
@@ -217,11 +220,11 @@ class Simulation:
          parameters).
         We won't call it directly in our testing.
         """
-        num_rounds = self.num_rounds
-        total_people = 0
+        num_rounds = self.num_rounds  # done
+        total_people = self.total_people
         max_time = 0
         total_wait_time = 0
-        people_completed = len(self.people_left)
+        people_completed = len(self.people_left)  # done
 
         return {
             'num_rounds': num_rounds,
