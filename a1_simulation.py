@@ -231,12 +231,19 @@ class Simulation:
             for person in people:
                 times.append(person.wait_time)
         times.sort()
-        max_time = times[-1]
+        if not times:
+            max_time = -1
+        else:
+            max_time = times[-1]
 
+        # Average time
         total_time = 0
         for item in times:
             total_time += item
-        avg_time = math.floor(total_time / len(times))
+        if not times:
+            avg_time = -1
+        else:
+            avg_time = math.floor(total_time / len(times))
 
         return {
             'num_rounds': num_rounds,
