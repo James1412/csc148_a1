@@ -150,7 +150,8 @@ class Simulation:
             # Create a new list of passengers that will remain in the elevator
             remaining_passengers = []
             for person in elevator.passengers:
-                if person.target == elevator.current_floor:
+                if person.target == elevator.current_floor \
+                        and elevator.target_floor == elevator.current_floor:
                     self.visualizer.show_disembarking(person, elevator)
                 else:
                     remaining_passengers.append(person)
