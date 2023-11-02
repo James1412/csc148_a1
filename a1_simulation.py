@@ -156,8 +156,6 @@ class Simulation:
                 if person not in self.waiting[floor]:
                     self.waiting[floor].append(person)
 
-        # TODO Changed it a bunch but now the simulation opens but idk if it works correctly
-
     def handle_boarding(self) -> None:
         """Handle boarding of people and visualize."""
         for floor in range(1, self.num_floors + 1):
