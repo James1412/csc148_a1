@@ -156,7 +156,8 @@ class FileArrivals(ArrivalGenerator):
                 # TODO: complete this. <line> is a list of strings corresponding to one line
                 #       of the original file. You'll need to convert the strings to ints, use
                 #       the ints to create Person objects, and finally update self.arrival_data.
-                ...
+                round_num = line[0]
+                
 
     def generate(self, round_num: int) -> dict[int, list[Person]]:
         """Return the new arrivals for the simulation at the given round.
