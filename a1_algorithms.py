@@ -135,7 +135,7 @@ class FileArrivals(ArrivalGenerator):
 
     We have provided some sample CSV files under the data/ folder.
     """
-    arrival_data: dict[int, list[Person]]
+    arrival_data: dict[int, list[Person]]  # keys are round #s (not floor #)
 
     def __init__(self, max_floor: int, filename: str) -> None:
         """Initialize a new FileArrivals algorithm from the given file.
@@ -152,12 +152,26 @@ class FileArrivals(ArrivalGenerator):
 
         with open(filename) as csvfile:
             reader = csv.reader(csvfile)
-            for line in reader:
-                # TODO: complete this. <line> is a list of strings corresponding to one line
-                #       of the original file. You'll need to convert the strings to ints, use
-                #       the ints to create Person objects, and finally update self.arrival_data.
-                round_num = line[0]
-                
+            for line in reader:  # each round (line)
+                round_num = int(line[0])
+                start_floor = []
+                target_floor = []
+                people = []
+                for i in range(1, len(line), 2):  # start floor of people
+                    start_floor.append(line[i])
+                for j in range(2, len(line), 2):  # target floor of people
+                    target_floor.append(line[j])
+                for start, target in zip(start_floor, target_floor):
+                    new_person = Person(int(start), int(target))
+                    people.append(new_person)
+                self.arrival_data[round_num] = people
+
+        # sort the arrival data by round number
+        sorted_arrival_data = {
+            k: self.arrival_data[k]
+            for k in sorted(self.arrival_data)
+        }
+        self.arrival_data = sorted_arrival_data
 
     def generate(self, round_num: int) -> dict[int, list[Person]]:
         """Return the new arrivals for the simulation at the given round.
@@ -182,6 +196,27 @@ class FileArrivals(ArrivalGenerator):
         >>> print(round0_arrivals[5])
         [Person(start=5, target=3, wait_time=0)]
         """
+        new_arrivals = {}
+
+        # Ensure that round_num exists in arrival_data
+        if round_num in self.arrival_data:
+            arrivals_for_round = self.arrival_data[round_num]
+
+            # Group people by their starting floor
+            people_by_start_floor = {}
+            for person in arrivals_for_round:
+                start_floor = person.start
+                if start_floor not in people_by_start_floor:
+                    people_by_start_floor[start_floor] = []
+                people_by_start_floor[start_floor].append(person)
+
+            # Sort people within each starting floor
+            # group by their original order of appearance
+            for start_floor, people in people_by_start_floor.items():
+                sorted_people = sorted(people, key=arrivals_for_round.index)
+                new_arrivals[start_floor] = sorted_people
+
+        return new_arrivals
 
 
 ###############################################################################

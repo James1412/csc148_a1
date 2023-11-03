@@ -112,9 +112,11 @@ def test_simple_stats_num_rounds() -> None:
 # Sample tests for Part 5
 ###############################################################################
 def test_file_arrivals_doctest() -> None:
-    """This test performs (essentially) the same check as the FileArrivals doctest we've provided.
+    """This test performs (essentially) the same check as the FileArrivals
+     doctest we've provided.
 
-    We've included it as a unit test here to make it easier for you to copy this code
+    We've included it as a unit test here to make it easier
+    for you to copy this code
     and write your own new test cases!
     """
     my_generator = FileArrivals(5, 'data/sample_arrivals.csv')
