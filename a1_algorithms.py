@@ -341,4 +341,5 @@ if __name__ == '__main__':
         'extra-imports': ['a1_entities', 'csv'],
         'max-nested-blocks': 4,
         'max-line-length': 100
+
     })
