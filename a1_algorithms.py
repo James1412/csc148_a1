@@ -285,7 +285,8 @@ class EndToEndLoop(MovingAlgorithm):
         return None
 
 
-def case_2(elevator: Elevator, waiting: dict[int, list[Person]]) -> None:
+def case_2(elevator: Elevator, waiting: dict[int, list[Person]],
+           max_floor: int) -> None:
     """Update elevator's target floor according to Case 2"""
     furthest_floor = None
     furthest_distance = 0
@@ -297,8 +298,10 @@ def case_2(elevator: Elevator, waiting: dict[int, list[Person]]) -> None:
             if distance > furthest_distance:
                 furthest_distance = distance
                 furthest_floor = floor
+
     if furthest_floor is not None:
-        elevator.target_floor = furthest_floor
+        # Ensure the target floor is within the valid range
+        elevator.target_floor = min(max_floor, max(1, furthest_floor))
     else:
         # If no one is waiting, set the target floor to the current floor
         elevator.target_floor = elevator.current_floor
@@ -359,7 +362,8 @@ class FurthestFloor(MovingAlgorithm):
 
         The parameters are:
         - elevators: a list of the system's elevators
-        - waiting: a dictionary mapping floor number to the list of people waiting on that floor
+        - waiting: a dictionary mapping floor number to the list
+        of people waiting on that floor
         - max_floor: the maximum floor number in the simulation
 
         Preconditions:
@@ -368,9 +372,11 @@ class FurthestFloor(MovingAlgorithm):
         for elevator in elevators:
             if len(elevator.passengers) >= 1:
                 case_1(elevator)
-            elif len(elevator.passengers) == 0 and elevator.current_floor == elevator.target_floor:
-                case_2(elevator, waiting)
-            elif len(elevator.passengers) == 0 and elevator.current_floor != elevator.target_floor:
+            elif len(elevator.passengers) == 0 and elevator.current_floor \
+                    == elevator.target_floor:
+                case_2(elevator, waiting, max_floor)
+            elif len(elevator.passengers) == 0 and elevator.current_floor \
+                    != elevator.target_floor:
                 case_3(elevator)
 
 
