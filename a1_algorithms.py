@@ -285,48 +285,6 @@ class EndToEndLoop(MovingAlgorithm):
         return None
 
 
-def case_2(elevator: Elevator, waiting: dict[int, list[Person]],
-           max_floor: int) -> None:
-    """Update elevator's target floor according to Case 2"""
-    furthest_floor = None
-    furthest_distance = 0
-
-    for floor in waiting:
-        people = waiting[floor]
-        if people:
-            distance = abs(elevator.current_floor - floor)
-            if distance > furthest_distance:
-                furthest_distance = distance
-                furthest_floor = floor
-
-    if furthest_floor is not None:
-        # Ensure the target floor is within the valid range
-        elevator.target_floor = min(max_floor, max(1, furthest_floor))
-    else:
-        # If no one is waiting, set the target floor to the current floor
-        elevator.target_floor = elevator.current_floor
-
-
-def case_3(elevator: Elevator) -> None:
-    """Update elevator's target floor according to Case 3"""
-    elevator.target_floor = elevator.target_floor
-
-
-def case_1(elevator: Elevator) -> None:
-    """
-    If the elevator has at least one passenger, set the elevator's target floor
-    to be the floor that is a passenger's target floor
-    and is the furthest away from the
-    elevator's current floor.
-    """
-    farthest = 0
-    for person in elevator.passengers:
-        distance = abs(person.target - elevator.current_floor)
-        if distance > farthest:
-            farthest = person.target
-        elevator.target_floor = farthest
-
-
 @check_contracts
 class FurthestFloor(MovingAlgorithm):
     """A moving algorithm that chooses far-away target floors.
@@ -370,14 +328,33 @@ class FurthestFloor(MovingAlgorithm):
         - elevators, waiting, and max_floor are from the same simulation run
         """
         for elevator in elevators:
-            if len(elevator.passengers) >= 1:
-                case_1(elevator)
-            elif len(elevator.passengers) == 0 and elevator.current_floor \
-                    == elevator.target_floor:
-                case_2(elevator, waiting, max_floor)
-            elif len(elevator.passengers) == 0 and elevator.current_floor \
-                    != elevator.target_floor:
-                case_3(elevator)
+            # Case 1
+            if elevator.passengers:
+                furthest = 0
+                furthest_floor = elevator.current_floor
+                for person in elevator.passengers:
+                    if abs(person.target - elevator.current_floor) > furthest:
+                        furthest = abs(person.target - elevator.current_floor)
+                        furthest_floor = person.target
+                elevator.target_floor = furthest_floor
+            # Case 2
+            if (not elevator.passengers) and \
+                    (elevator.target_floor == elevator.current_floor):
+                furthest_distance = 0
+                furthest_floor = elevator.current_floor
+                for floor in waiting:
+                    if waiting[floor] and abs(floor - elevator.current_floor)\
+                            > furthest_distance:
+                        furthest_distance = abs(floor - elevator.current_floor)
+                        furthest_floor = floor
+                        elevator.target_floor = floor
+                    elif waiting[floor] and abs(floor - elevator.current_floor)\
+                            == furthest_distance:
+                        elevator.target_floor = min(floor, furthest_floor)
+
+            if (not elevator.passengers) and \
+                    elevator.target_floor != elevator.current_floor:
+                elevator.target_floor = elevator.target_floor
 
 
 if __name__ == '__main__':

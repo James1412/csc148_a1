@@ -184,11 +184,17 @@ class Simulation:
             for elevator in self.elevators:
                 for person in waiting_person:
                     if elevator.current_floor == person.start \
-                            and elevator.fullness() < 1.0 \
-                            and elevator.target_floor <= person.target:
-                        elevator.add_passenger(person)
-                        waiting_person.remove(person)
-                        self.visualizer.show_boarding(person, elevator)
+                            and elevator.fullness() < 1.0:
+                        if elevator.current_floor == elevator.target_floor\
+                                or (elevator.current_floor >
+                                    elevator.target_floor and
+                                    elevator.current_floor > person.target) \
+                                or (elevator.current_floor <
+                                    elevator.target_floor and
+                                    elevator.current_floor < person.target):
+                            elevator.add_passenger(person)
+                            waiting_person.remove(person)
+                            self.visualizer.show_boarding(person, elevator)
 
     def move_elevators(self) -> None:
         """Update elevator target floors and then move them."""
@@ -202,6 +208,9 @@ class Simulation:
             elif elevator.current_floor > elevator.target_floor:
                 elevator.current_floor -= 1
                 directions.append(Direction.DOWN)
+            else:
+                elevator.current_floor += 0
+                directions.append(Direction.STAY)
         self.visualizer.show_elevator_moves(self.elevators, directions)
 
     def update_wait_times(self) -> None:
@@ -281,7 +290,7 @@ def run_example_simulation() -> dict[str, int]:
     }
 
     sim = Simulation(config)
-    stats = sim.run(15)
+    stats = sim.run(25)
     return stats
 
 
