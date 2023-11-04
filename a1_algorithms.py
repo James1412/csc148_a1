@@ -283,6 +283,45 @@ class EndToEndLoop(MovingAlgorithm):
                 return None
 
 
+def case_2(elevator: Elevator, waiting: dict[int, list[Person]]):
+    """Update elevator's target floor according to Case 2"""
+    furthest_floor = None
+    furthest_distance = 0
+
+    for floor in waiting:
+        people = waiting[floor]
+        if people:
+            distance = abs(elevator.current_floor - floor)
+            if distance > furthest_distance:
+                furthest_distance = distance
+                furthest_floor = floor
+    if furthest_floor is not None:
+        elevator.target_floor = furthest_floor
+    else:
+        # If no one is waiting, set the target floor to the current floor
+        elevator.target_floor = elevator.current_floor
+
+
+def case_3(elevator):
+    """Update elevator's target floor according to Case 3"""
+    elevator.target_floor = elevator.target_floor
+
+
+def case_1(elevator: Elevator) -> None:
+    """
+    If the elevator has at least one passenger, set the elevator's target floor
+    to be the floor that is a passenger's target floor
+    and is the furthest away from the
+    elevator's current floor.
+    """
+    farthest = 0
+    for person in elevator.passengers:
+        distance = abs(person.target - elevator.current_floor)
+        if distance > farthest:
+            farthest = person.target
+        elevator.target_floor = farthest
+
+
 @check_contracts
 class FurthestFloor(MovingAlgorithm):
     """A moving algorithm that chooses far-away target floors.
@@ -291,18 +330,25 @@ class FurthestFloor(MovingAlgorithm):
 
     For *each* elevator:
 
-    - *Case 1*: If the elevator has at least one passenger, set the elevator's target floor
-      to be the floor that is a passenger's target floor and is the furthest away from the
+    - *Case 1*: If the elevator has at least one passenger, set the elevator's
+     target floor
+      to be the floor that is a passenger's target floor and is the furthest
+      away from the
       elevator's current floor.
-    - *Case 2*: If the elevator has no passengers and is idle, set the elevator's target floor
-      to be the floor that has at least one passenger waiting and is the furthest away from the
+    - *Case 2*: If the elevator has no passengers and is idle, set the
+    elevator's target floor
+      to be the floor that has at least one passenger waiting and is the
+      furthest away from the
       elevator's current floor.
-        - If there are no waiting people at all, set the elevator's target floor to the
+        - If there are no waiting people at all, set the elevator's target
+        floor to the
           current floor. The elevator remains idle and does not move this round.
-    - *Case 3*: If the elevator has no passengers and is not idle, do not change the target floor.
+    - *Case 3*: If the elevator has no passengers and is not idle, do not
+    change the target floor.
 
     Note: In Cases 1 and 2, if there is a tie, always pick the *lowest* floor.
     """
+
     def update_target_floors(self,
                              elevators: list[Elevator],
                              waiting: dict[int, list[Person]],
@@ -311,13 +357,19 @@ class FurthestFloor(MovingAlgorithm):
 
         The parameters are:
         - elevators: a list of the system's elevators
-        - waiting: a dictionary mapping floor number to the list
-         of people waiting on that floor
+        - waiting: a dictionary mapping floor number to the list of people waiting on that floor
         - max_floor: the maximum floor number in the simulation
 
         Preconditions:
         - elevators, waiting, and max_floor are from the same simulation run
         """
+        for elevator in elevators:
+            if len(elevator.passengers) >= 1:
+                case_1(elevator)
+            elif len(elevator.passengers) == 0 and elevator.current_floor == elevator.target_floor:
+                case_2(elevator, waiting)
+            elif len(elevator.passengers) == 0 and elevator.current_floor != elevator.target_floor:
+                case_3(elevator)
 
 
 if __name__ == '__main__':
@@ -341,5 +393,4 @@ if __name__ == '__main__':
         'extra-imports': ['a1_entities', 'csv'],
         'max-nested-blocks': 4,
         'max-line-length': 100
-
     })
