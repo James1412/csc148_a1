@@ -284,8 +284,8 @@ def run_example_simulation() -> dict[str, int]:
         'num_floors': num_floors,
         'num_elevators': num_elevators,
         'elevator_capacity': elevator_capacity,
-        'arrival_generator': a1_algorithms.SingleArrivals(num_floors),
-        'moving_algorithm': a1_algorithms.EndToEndLoop(),
+        'arrival_generator': a1_algorithms.FileArrivals(num_floors, 'data/sample_arrivals_ten.csv'),
+        'moving_algorithm': a1_algorithms.FurthestFloor(),
         'visualize': True
     }
 
