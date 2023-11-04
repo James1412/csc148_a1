@@ -115,7 +115,9 @@ class SingleArrivals(ArrivalGenerator):
         if round_num == 0:
             return new_arrivals
         else:
+            j = 0
             for i in range(round_num):
+                j += i
                 if new_person.target != self.max_floor:
                     new_person.target += 1
                 else:
@@ -268,7 +270,6 @@ class EndToEndLoop(MovingAlgorithm):
     - This algorithm IGNORES the passengers on the elevators, and the people
       who are waiting for an elevator.
     """
-
     def update_target_floors(self,
                              elevators: list[Elevator],
                              waiting: dict[int, list[Person]],
@@ -281,9 +282,10 @@ class EndToEndLoop(MovingAlgorithm):
                 elevator.target_floor = 1
             else:
                 return None
+        return None
 
 
-def case_2(elevator: Elevator, waiting: dict[int, list[Person]]):
+def case_2(elevator: Elevator, waiting: dict[int, list[Person]]) -> None:
     """Update elevator's target floor according to Case 2"""
     furthest_floor = None
     furthest_distance = 0
@@ -302,7 +304,7 @@ def case_2(elevator: Elevator, waiting: dict[int, list[Person]]):
         elevator.target_floor = elevator.current_floor
 
 
-def case_3(elevator):
+def case_3(elevator: Elevator) -> None:
     """Update elevator's target floor according to Case 3"""
     elevator.target_floor = elevator.target_floor
 
